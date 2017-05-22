@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Automação Residencial - Arduino</title>
+        <script>
+		strLED1 = "";
+		strLED2 = "";
+		strLED3 = "";		
+		var LED2_state = 0;
+		var LED3_state = 0;
+		function GetArduinoIO()
+		{
+			nocache = "&nocache=" + Math.random() * 1000000;
+			var request = new XMLHttpRequest();
+			request.onreadystatechange = function()
+			{
+				if (this.readyState == 4) {
+					if (this.status == 200) {
+						if (this.responseXML != null) {
+							// XML file received - contains analog values, switch values and LED states
+							var count;
+							
+							// LED 1
+							//if (this.responseXML.getElementsByTagName('LED')[0].childNodes[0].nodeValue === "checked") {
+							//	document.LED_form.LED1.checked = true;
+							//}
+							//else {
+							//	document.LED_form.LED1.checked = false;
+							//}
+
+
+							// LED 1
+							if (this.responseXML.getElementsByTagName('LED')[0].childNodes[0].nodeValue === "on") {
+								document.getElementById("LED1").innerHTML = "DESLIGADO";
+								LED1_state = 1;
+							}
+							else {
+								document.getElementById("LED1").innerHTML = "LIGADO";
+								LED1_state = 0;
+							}
+
+
+							// LED 2
+							if (this.responseXML.getElementsByTagName('LED')[1].childNodes[0].nodeValue === "on") {
+								document.getElementById("LED2").innerHTML = "DESLIGADO";
+								LED2_state = 1;
+							}
+							else {
+								document.getElementById("LED2").innerHTML = "LIGADO";
+								LED2_state = 0;
+							}
+							
+							// LED 3
+							if (this.responseXML.getElementsByTagName('LED')[2].childNodes[0].nodeValue === "on") {
+								document.getElementById("LED3").innerHTML = "DESLIGADO";
+								LED3_state = 1;
+							}
+							else {
+								document.getElementById("LED3").innerHTML = "LIGADO";
+								LED3_state = 0;
+							}							
+						}
+					}
+				}
+			}
+			// send HTTP GET request with LEDs to switch on/off if any
+			request.open("GET", "ajax_inputs" + strLED1 + strLED2 + strLED3 + nocache, true);
+			request.send(null);
+			setTimeout('GetArduinoIO()', 1000);
+			strLED1 = "";
+			strLED2 = "";
+			strLED3 = "";			
+		}
+		// service LEDs when checkbox checked/unchecked
+		//function GetCheck()
+		//{
+		//	if (LED_form.LED1.checked) {
+		//		strLED1 = "&LED1=1";
+		//	}
+		//	else {
+		//		strLED1 = "&LED1=0";
+		//	}
+		//}
+
+		function GetButton1()
+		{
+			if (LED1_state === 1) {
+				LED1_state = 0;
+				strLED1 = "&LED1=0";
+			}
+			else {
+				LED1_state = 1;
+				strLED1 = "&LED1=1";
+			}
+		}
+
+		function GetButton2()
+		{
+			if (LED2_state === 1) {
+				LED2_state = 0;
+				strLED2 = "&LED2=0";
+			}
+			else {
+				LED2_state = 1;
+				strLED2 = "&LED2=1";
+			}
+		}
+
+		function GetButton3()
+		{
+			if (LED3_state === 1) {
+				LED3_state = 0;
+				strLED3 = "&LED3=0";
+			}
+			else {
+				LED3_state = 1;
+				strLED3 = "&LED3=1";
+			}
+		}		
+	</script>
+	<style>
+		.IO_box {
+			float: center;
+			margin: 0 20px 0px 0;
+			border: 2px solid #ea4335;
+			border-radius: 5px;
+			padding: 0 5px 0 5px;
+			width: 150px;
+		}
+		h1 {
+			font-family: tahoma;			
+			text-align: center;
+			font-size: 30px;
+			color: #4285f4;
+			margin: 0 0 10px 0;
+		}
+		h2 {
+			font-family: tahoma;
+			font-size: 20px;
+			color: #ea4335;
+			margin: 5px 0 5px 0;
+		}
+		button {
+			text-align: center;
+			font-size: 16px;
+			color: black;
+			border-radius: 2px;
+			padding: 5px 20px 5px 20px;
+		}
+		p{
+			font-family: tahoma;
+		}
+		p.foot{
+			font-family: Tahoma;
+			text-align: center;
+			font-size: 16px;
+			color: #228B22;
+			border-radius: 5px;
+			}		
+
+		.small_text {
+			font-size: 70%;
+			color: #737373;
+		}
+		strong{
+			font-size: 30px;
+		}
+	</style>
+	<meta charset="UTF-8">
+    </head>
+    <body onload="GetArduinoIO()">
+        <br><h1>AUTOMAÇÃO RESIDENCIAL</h1>
+        <h2><center>Controle sua casa pela internet.</center></h2>
+        <br><br>
+		<CENTER>
+		<div class="IO_box">
+			<h2>2º Piso</h2><br>
+			<button type="button" id="LED1" onclick="GetButton1()">LIGADO</button><br /><br />
+		</div><BR>
+		<div class="IO_box">
+			<h2>1º Piso</h2><br>
+			<button type="button" id="LED2" onclick="GetButton2()">LIGADO</button><br /><br />
+		</div><BR>
+		<div class="IO_box">
+			<h2>Térreo</h2><br>
+			<button type="button" id="LED3" onclick="GetButton3()">LIGADO</button><br /><br />
+		</div>		
+		<br><br><p class="foot">Desenvolvimento: Ana Cristina Miguel, Carolina Amorim, José Carlos Perez, Patricia Hubscher.<br>6º e 7º Semestre de Ciência da Computação<br>Faculdade Anhanguera FAC 4.</p>
+		<p class="foot"></p>
+		<p class="foot">Documentação disponível em: <strong>goo.gl/zzJHLW</strong>.</p>
+		<p class="foot">Matéria: Sistemas microprogramados<br>Prof - Giuliano Souza.</p>		
+    </body>
+</html>
